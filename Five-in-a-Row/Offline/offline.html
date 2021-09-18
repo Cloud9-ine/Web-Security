@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+    <title>Five-in-a-Row, Offline Ver.</title>
+<!--    The following defines the objects and functions-->
+<!--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/socket.io/4.1.3/socket.io.min.js"></script>-->
+<!--<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>-->
+<script>
+    // int value, 1 for black wins and -1 for white wins and 0 for normal
+    var winState = 0;
+
+    // class of chess Board
+    class Board {
+        // attributes
+        numLines = 19;
+        interval = 30;
+        clickSize = 10;
+
+        // construction function
+        constructor(x, y){
+            // initialize the positions of the board's grid
+            this.start_x = x;
+            this.start_y = y;
+            this.end_x = this.start_x + (this.numLines-1)*this.interval;
+            this.end_y = this.start_y + (this.numLines-1)*this.interval;
+            this.mid_x = (this.start_x + this.end_x) / 2;
+            this.mid_y = (this.start_y + this.end_y) / 2;
+            // initialize the positions of outer board
+            this.out_x = this.start_x-this.interval;
+            this.out_y = this.start_y-this.interval;
+            this.outSize = (this.numLines+1) * this.interval;
+        }
+
+        // function to draw the board
+        drawBoard(){
+            let myCanvas = document.getElementById("boardCanvas");
+            let context = myCanvas.getContext("2d");
+            // Draw wooden background
+            context.fillStyle = "rgba(180, 125, 0, 1)";
+            context.fillRect(this.out_x, this.out_y, this.outSize, this.outSize);
+            // Draw lines
+            context.strokeStyle = "#aaa" ;
+            // context.beginPath();
+            for (let i=0; i<this.numLines; i++) {
+                context.moveTo(this.start_x, this.start_y + i*this.interval);
+                context.lineTo(this.end_x, this.start_y + i*this.interval);
+                context.stroke();
+                context.moveTo(this.start_x + i*this.interval, this.start_y);
+                context.lineTo(this.start_x + i*this.interval, this.end_y);
+                context.stroke();
+            }
+            // Draw the middle point
+            context.fillStyle = "rgba(100, 100, 100, 1)";
+            context.fillRect(this.mid_x-this.clickSize/2, this.mid_y-this.clickSize/2, this.clickSize, this.clickSize);
+        }
+
+    }
+
+    // class of chess Piece
+    class Piece {
+        // function to draw pieces
+        drawPiece(x, y, isBlack){
+            let myCanvas = document.getElementById("boardCanvas");
+            let context = myCanvas.getContext("2d");
+            let gradient = context.createRadialGradient(x, y, 10, x-5, y-5, 0);
+            if (isBlack === true){
+                gradient.addColorStop(0,'#0a0a0a');
+                gradient.addColorStop(1,'#636766');
+            }
+            else {
+                gradient.addColorStop(0,'#d1d1d1');
+                gradient.addColorStop(1,'#f9f9f9');
+            }
+            context.beginPath();
+            context.arc(x, y, 10, 0, 2 * Math.PI);
+            context.closePath();
+            context.fillStyle = gradient;
+            context.fill();
+        }
+
+    }
+
+    // function to draw a new piece
+    function drawNewPiece(x, y, p) {
+        let draw_x = x * board.interval + board.start_x;
+        let draw_y = y * board.interval + board.start_y;
+        let piece = new Piece();
+        if (p === 1) {
+            piece.drawPiece(draw_x, draw_y, true);
+        } else {
+            piece.drawPiece(draw_x, draw_y, false);
+        }
+    }
+
+    // function to receive assigned character, (black or white)
+
+
+    // function to send step to the server
+
+
+    // function to receive the next step of player's own from the server
+
+
+    // function to receive game result from the server
+
+
+    // function to get mouse click and send steps to the server
+    function getMouseClick(event) {
+        // Do not allow click when it's not the player's turn
+        if (isMyTurn) {
+            // the rough value of row and column index
+            let x = (event.layerX - board.start_x) / board.interval;
+            let y = (event.layerY - board.start_y) / board.interval;
+            // calculate the decimal part and cut
+            xDec = x % 1;
+            yDec = y % 1;
+            let piece_x = -1;
+            let piece_y = -1;
+            // decide the row index
+            if ((0 <= xDec) && (xDec <= 0.35)) {
+                piece_x = Math.floor(x);
+            } else if (xDec >= 0.65) {
+                piece_x = Math.ceil(x);
+            } else if ((-0.35 <= xDec) && (xDec < 0)) {
+                piece_x = 0;
+            }
+            // decide the column index
+            if ((0 <= yDec) && (yDec <= 0.35)) {
+                piece_y = Math.floor(y);
+            } else if (yDec >= 0.65) {
+                piece_y = Math.ceil(y);
+            } else if ((-0.35 <= yDec) && (yDec < 0)) {
+                piece_y = 0;
+            }
+        }
+    }
+
+</script>
+</head>
+
+<body>
+<h1>Five-in-a-Row, Offline Ver.</h1>
+<!--Define the canvas-->
+<!--<canvas id="boardCanvas" width="800px" height="800px"></canvas>-->
+<canvas id="boardCanvas" width="800px" height="800px" onclick="getMouseClick(event)"></canvas>
+<!--The following is the Main function-->
+<script>
+    // Instantiate a new chess board
+    let board = new Board(60, 60);
+    // Draw the chess board
+    board.drawBoard();
+
+</script>
+
+
+</body>
+</html>
