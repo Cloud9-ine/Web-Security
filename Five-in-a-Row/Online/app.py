@@ -234,7 +234,7 @@ def send_results():
     return jsonify(result_json)
 
 
-@socketio.on('askOtherStep', namespace='/testnamespace')
+@socketio.on('askOtherStep', namespace='/other_step')
 def give_response(data):
     clientReq = data.get('param')
     # print("Client requested...")

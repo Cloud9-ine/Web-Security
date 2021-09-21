@@ -201,7 +201,7 @@
             // receive this step's result from the server
             receiveStepFromServer();
             // receive the game's result from the server
-            receiveResult();
+            // receiveResult();
         }
     }
 
@@ -227,8 +227,16 @@
     }, 5000);
     // Listen the server while it's not the player's turn
     var requestInterval = setInterval(function () {
+        // stop the game if someone wins
+        if (winState !== 0) {
+            clearInterval(requestInterval);
+            isMyTurn = false;
+        }
+        // receive the game's result from the server
+        receiveResult();
+        // listen the server while it's not the player's turn
         if (isMyTurn === false) {
-            const websocket_url = 'http://localhost:5000/testnamespace';
+            const websocket_url = 'http://localhost:5000/other_step';
             const socket = io.connect(websocket_url);
             // Request for other's step
             socket.emit('askOtherStep', {'param': 'value'});
@@ -251,13 +259,8 @@
                     alert('ERROR!');
                 }
             });
-            // receive the game's result from the server
-            receiveResult();
-            if (winState !== 0){
-                clearInterval(requestInterval);
-            }
         }
-    }, 2000);
+    }, 1500);
 
 
 
