@@ -114,12 +114,12 @@
             let context = myCanvas.getContext("2d");
             let gradient = context.createRadialGradient(x, y, 10, x-5, y-5, 0);
             if (isBlack === true){
-                gradient.addColorStop(0,'#0a0a0a');
-                gradient.addColorStop(1,'#636766');
+                gradient.addColorStop(0,'#000000');
+                gradient.addColorStop(1,'#454545');
             }
             else {
-                gradient.addColorStop(0,'#d1d1d1');
-                gradient.addColorStop(1,'#f9f9f9');
+                gradient.addColorStop(0,'#bfbfbf');
+                gradient.addColorStop(1,'#f5f5f5');
             }
             context.beginPath();
             context.arc(x, y, 10, 0, 2 * Math.PI);
