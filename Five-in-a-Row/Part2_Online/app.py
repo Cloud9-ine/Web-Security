@@ -239,7 +239,10 @@ def give_response(data):
     clientReq = data.get('param')
     # print("Client requested...")
     # Emit the step
-    emit('response', {'code': '200', 'msg': message_get})
+    if game.isValid:
+        emit('response', {'code': '200', 'msg': message_json['message']})
+    else:
+        emit('response', {'code': '400', 'msg': message_json['message']})
 
     # time.sleep(5)
 
