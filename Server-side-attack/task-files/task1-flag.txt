@@ -1,0 +1,1 @@
+You have successfully captured the flag of Task1 through Path Traversal!
